@@ -18,6 +18,7 @@ int main(){
     }
 }
 
+
 int totalNQueens(int size){
     nQueens myQueens {size};
     myQueens.solve(0);
