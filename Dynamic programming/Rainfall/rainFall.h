@@ -16,6 +16,9 @@ private:
 	std::vector<std::vector<bool>> flowsRight;
 	std::vector<std::vector<bool>> flowsLeft;
 
+	solveFlowsLeft();
+	solveFlowsRight();
+
 public:
 	Rainfall(int rows, int cols);
 	solveFlows();

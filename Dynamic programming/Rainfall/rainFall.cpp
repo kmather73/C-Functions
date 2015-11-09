@@ -61,7 +61,7 @@ Rainfall::printDoubleFlowPoints(){
 		for(int j=0; j<cols; ++j){
 			std::cout << std::setfill(' ') << std::setw(WIDTH);
 
-			if(flowsLeft[i][j])
+			if(flowsLeft[i][j] && flowsRight[i][j])
 				std::cout << "*";
 			else
 				std::cout << board[i][j];
@@ -72,7 +72,35 @@ Rainfall::printDoubleFlowPoints(){
 	std::cout << " " << std::setfill('-') << std::setw(WIDTH*cols+1) << " " << std::endl;
 }
 
-Rainfall::solveFlows(){
+Rainfall::solveFlowsRight(){
+	for(int i = rows - 1; i >=0; --i){
+		for(int j = cols - 2; j >= 0; --j){
+			if(board[i][j] >= board[i][j+1] && flowsRight[i][j+1])
+				flowsRight[i][j] = true;
+			if(i > 0 && board[i-1][j] <= board[i][j] && flowsRight[i-1][j])
+				flowsRight[i][j] = true;
+			if(i + 1 < rows && board[i][j] >= board[i+1][j] && flowsRight[i+1][j])
+				flowsRight[i][j] = true;
+			if(j -1 >= 0 && board[i][j] >= board[i][j-1] && flowsRight[i][j-1])
+				flowsRight[i][j] = true;
+		}
+	}
+
+	for(int i = 0; i < rows; ++i){
+		for(int j = 0; j < cols - 1; ++j){
+			if(j > 0 && board[i][j-1] <= board[i][j] && flowsLeft[i][j-1])
+				flowsLeft[i][j] = true;
+			if(i > 0 && board[i-1][j] <= board[i][j] && flowsLeft[i-1][j])
+				flowsLeft[i][j] = true;
+			if(i + 1 < rows && board[i][j] >= board[i+1][j] && flowsLeft[i+1][j])
+				flowsLeft[i][j] = true;
+			if(j + 1 < cols && board[i][j] >= board[i][j+1] && flowsLeft[i][j+1])
+				flowsLeft[i][j] = true;
+		}
+	}
+}
+
+Rainfall::solveFlowsLeft(){
 	for(int i = 0; i < rows; ++i){
 		for(int j = 1; j < cols; ++j){
 			if(board[i][j-1] <= board[i][j] && flowsLeft[i][j-1])
@@ -100,8 +128,13 @@ Rainfall::solveFlows(){
 	}
 }
 
+Rainfall::solveFlows(){
+	this->solveFlowsLeft();
+	this->solveFlowsRight();
+}
+
 int main(){
-	Rainfall myBoard (10000,5);
+	Rainfall myBoard (10,5);
 	myBoard.printBoard();
 	myBoard.solveFlows();
 	myBoard.printDoubleFlowPoints();
